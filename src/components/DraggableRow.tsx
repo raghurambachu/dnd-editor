@@ -1,3 +1,4 @@
+import styled from "@emotion/styled";
 import { useState } from "react";
 import {
   DraggableProvided,
@@ -22,6 +23,25 @@ const getItemStyle = (
   ...draggableStyle,
 });
 
+const DraggableRowWrapper = styled.div`
+  background: white;
+`;
+
+const DraggableRowInnerWrapper = styled.div`
+  display: flex;
+  align-items: flex-start;
+`;
+
+const DragHandle = styled.div`
+  margin-right: 0.5rem;
+  .drag-icon {
+    &:hover {
+      background: #efefef;
+      border-radius: 0.4rem;
+    }
+  }
+`;
+
 interface IDraggableRow {
   draggableProvided: DraggableProvided;
   draggableSnapshot: DraggableStateSnapshot;
@@ -38,7 +58,7 @@ const DraggableRow = ({
   const [isBeingHovered, setIsBeingHovered] = useState(false);
 
   return (
-    <div
+    <DraggableRowWrapper
       ref={draggableProvided.innerRef}
       {...draggableProvided.draggableProps}
       //Todo : @ts-ignore needs to be removed
@@ -47,24 +67,24 @@ const DraggableRow = ({
         draggableProvided.draggableProps.style
       )}
     >
-      <div
-        className="flex items-start"
+      <DraggableRowInnerWrapper
         onMouseEnter={() => setIsBeingHovered(true)}
         onMouseLeave={() => setIsBeingHovered(false)}
       >
-        <div className="mr-2" {...draggableProvided.dragHandleProps}>
+        <DragHandle {...draggableProvided.dragHandleProps}>
           <MdDragIndicator
+            className="drag-icon"
             visibility={isBeingHovered ? "visibile" : "hidden"}
             color="#c2c2c2"
             size={22}
           />
-        </div>
+        </DragHandle>
         <ContentEditableRow
           contentRow={contentRow}
           setContentRows={setContentRows}
         />
-      </div>
-    </div>
+      </DraggableRowInnerWrapper>
+    </DraggableRowWrapper>
   );
 };
 
