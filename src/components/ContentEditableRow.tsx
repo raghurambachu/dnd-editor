@@ -1,4 +1,5 @@
 import styled from "@emotion/styled";
+import { Popover } from "react-text-selection-popover";
 import ContentEditable from "react-contenteditable";
 import { IContentRow } from "../interfaces";
 
@@ -11,6 +12,25 @@ const ContentEditableWrapper = styled.div`
     width: 100%;
     outline: none;
   }
+`;
+
+interface IPopoverWrapper {
+  left: number;
+  top: number;
+  width: number;
+}
+
+const PopoverWrapper = styled.div`
+  position: absolute;
+  left: ${({ left, width }: IPopoverWrapper) => `${left + width - 80}px`};
+  top: ${({ top }: IPopoverWrapper) => `${top - 30}px`};
+  width: 20rem;
+  background: #efefef;
+  pointer-events: none;
+  text-align: center;
+  color: #35352f;
+  border-radius: 3px;
+  font-size: 1.6rem;
 `;
 
 interface IContentEditableRow {
@@ -43,6 +63,23 @@ const ContentEditableRow = ({
             editedContentRows[editableContentRowIndex] = editedRow;
             return [...editedContentRows];
           })
+        }
+      />
+      <Popover
+        render={
+          // Todo @ts-ignore needs to be removed
+          ({ clientRect, isCollapsed, textContent }) => {
+            if (clientRect == null || isCollapsed) return null;
+            return (
+              <PopoverWrapper
+                left={clientRect.left}
+                top={clientRect.top}
+                width={clientRect.width}
+              >
+                Selecting {(textContent || "").length} characters
+              </PopoverWrapper>
+            );
+          }
         }
       />
     </ContentEditableWrapper>

@@ -72,7 +72,7 @@ const DraggableRow = ({
   const [isBeingHovered, setIsBeingHovered] = useState(false);
 
   useEffect(() => {
-    //   Takes care of the row actions to be visible even on dragging state
+    //   Ensures row actions to be visible even on dragging state
     if (draggableSnapshot.isDragging) {
       setIsBeingHovered(true);
     } else {
