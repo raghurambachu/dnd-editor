@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { MdDragIndicator } from "react-icons/md";
 import {
   DragDropContext,
   Draggable,
@@ -8,6 +9,7 @@ import {
   NotDraggingStyle,
 } from "react-beautiful-dnd";
 import { IContentRow } from "./interfaces";
+import ContentEditableRow from "./components/ContentEditableRow";
 
 const grid = 8;
 const getItemStyle = (
@@ -44,26 +46,32 @@ function App() {
     {
       id: "item-1",
       content: "item-1 content",
+      htmlContent: `<p>item-1 content</p>`,
     },
     {
       id: "item-2",
       content: "item-2 content",
+      htmlContent: `<p>item-2 content</p>`,
     },
     {
       id: "item-3",
       content: "item-3 content",
+      htmlContent: `<p>item-3 content</p>`,
     },
     {
       id: "item-4",
       content: "item-4 content",
+      htmlContent: `<p>item-4 content</p>`,
     },
     {
       id: "item-5",
       content: "item-5 content",
+      htmlContent: `<p>item-5 content</p>`,
     },
     {
       id: "item-6",
       content: "item-6 content",
+      htmlContent: `<p>item-6 content</p>`,
     },
   ]);
 
@@ -113,14 +121,24 @@ function App() {
                     <div
                       ref={draggableProvided.innerRef}
                       {...draggableProvided.draggableProps}
-                      {...draggableProvided.dragHandleProps}
                       // @ts-ignore
                       style={getItemStyle(
                         draggableSnapshot.isDragging,
                         draggableProvided.draggableProps.style
                       )}
                     >
-                      {contentRow.content}
+                      <div className="flex items-center">
+                        <div
+                          className="mr-2"
+                          {...draggableProvided.dragHandleProps}
+                        >
+                          <MdDragIndicator />
+                        </div>
+                        <ContentEditableRow
+                          contentRow={contentRow}
+                          setContentRows={setContentRows}
+                        />
+                      </div>
                     </div>
                   )}
                 </Draggable>
