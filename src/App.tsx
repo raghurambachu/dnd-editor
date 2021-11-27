@@ -63,32 +63,26 @@ function App() {
   const [contentRows, setContentRows] = useState<IContentRow[]>([
     {
       id: "item-1",
-      content: "item-1 content",
       htmlContent: `<p>item-1 content</p>`,
     },
     {
       id: "item-2",
-      content: "item-2 content",
       htmlContent: `<p>item-2 content</p>`,
     },
     {
       id: "item-3",
-      content: "item-3 content",
       htmlContent: `<p>item-3 content</p>`,
     },
     {
       id: "item-4",
-      content: "item-4 content",
       htmlContent: `<p>item-4 content</p>`,
     },
     {
       id: "item-5",
-      content: "item-5 content",
       htmlContent: `<p>item-5 content</p>`,
     },
     {
       id: "item-6",
-      content: "item-6 content",
       htmlContent: `<p>item-6 content</p>`,
     },
   ]);
@@ -106,6 +100,25 @@ function App() {
     );
 
     setContentRows(contentRowList);
+  }
+  // Todo: needs to be moved to utilities
+  function handleAddContentEditableRow(contentRow: IContentRow) {
+    const createdNewContentRow: IContentRow = {
+      id: `item-${contentRows.length + 1}`,
+      htmlContent: `<p> </p>`,
+    };
+
+    let contentRowList = Array.from(contentRows);
+    const currentClickedContentRowIndex = contentRows.findIndex(
+      (contentRowVal) => contentRowVal.id === contentRow.id
+    );
+    contentRowList.splice(
+      currentClickedContentRowIndex + 1,
+      0,
+      createdNewContentRow
+    );
+
+    setContentRows([...contentRowList]);
   }
 
   return (
@@ -132,6 +145,9 @@ function App() {
                           draggableSnapshot={draggableSnapshot}
                           contentRow={contentRow}
                           setContentRows={setContentRows}
+                          handleAddContentEditableRow={
+                            handleAddContentEditableRow
+                          }
                         />
                       );
                     }}

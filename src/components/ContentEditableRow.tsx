@@ -23,6 +23,7 @@ const ContentEditableRow = ({
   setContentRows,
 }: IContentEditableRow) => {
   const { id, htmlContent } = contentRow;
+
   return (
     <ContentEditableWrapper>
       <ContentEditable
