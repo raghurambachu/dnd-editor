@@ -10,28 +10,46 @@ import {
 } from "react-beautiful-dnd";
 import { IContentRow } from "./interfaces";
 import ContentEditableRow from "./components/ContentEditableRow";
+import { reorder } from "./utilities/helper";
+import styled from "@emotion/styled";
+import DraggableRow from "./components/DraggableRow";
 
-const grid = 8;
-const getItemStyle = (
-  isDragging: boolean,
-  draggableStyle: DraggingStyle | NotDraggingStyle | undefined
-) => ({
-  // some basic styles to make the items look a bit nicer
+const Layout = styled.div`
+  display: grid;
+  min-height: 100vh;
+  grid-template-columns: 25.6rem auto;
+  grid-template-areas: "sidebar main";
+`;
 
-  padding: grid * 2,
-  margin: `0 0 ${grid}px 0`,
+interface ISidebarWrapper {
+  border: string;
+}
 
-  // change background colour if dragging
-  background: isDragging ? "lightgreen" : "red",
+const SidebarWrapper = styled.aside`
+  grid-area: sidebar;
+  box-shadow: ${({ border }: ISidebarWrapper) => ` 0 0 0.3rem ${border}`};
+  position: sticky;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  height: 100vh;
+  background: #f6f6f2;
+  min-height: 100vh;
+`;
 
-  // styles we need to apply on draggables
-  ...draggableStyle,
-});
+interface IMainWrapper {
+  background: string;
+}
+
+const MainWrapper = styled.main`
+  grid-area: main;
+  background: ${({ background }: IMainWrapper) => background};
+  margin: 3rem 10.6rem 0;
+  overflow-y: auto;
+`;
 
 const getListStyle = (isDraggingOver: boolean) => ({
-  background: isDraggingOver ? "lightblue" : "grey",
-  padding: grid,
-  width: 250,
+  background: isDraggingOver ? "lightblue" : "white",
 });
 
 function App() {
@@ -75,18 +93,6 @@ function App() {
     },
   ]);
 
-  const reorder = (
-    list: IContentRow[],
-    startIndex: number,
-    endIndex: number
-  ) => {
-    const result = Array.from(list);
-    const [removed] = result.splice(startIndex, 1);
-    result.splice(endIndex, 0, removed);
-
-    return result;
-  };
-
   function onDragEnd(result: DropResult) {
     // dropped outside the list
     if (!result.destination) {
@@ -103,52 +109,41 @@ function App() {
   }
 
   return (
-    <div className="bg-blue-100 min-h-screen">
-      <DragDropContext onDragEnd={onDragEnd}>
-        <Droppable droppableId="droppable">
-          {(droppableProvided, droppableSnapshot) => (
-            <div
-              ref={droppableProvided.innerRef}
-              style={getListStyle(droppableSnapshot.isDraggingOver)}
-            >
-              {contentRows.map((contentRow, index) => (
-                <Draggable
-                  key={contentRow.id}
-                  draggableId={contentRow.id}
-                  index={index}
-                >
-                  {(draggableProvided, draggableSnapshot) => (
-                    <div
-                      ref={draggableProvided.innerRef}
-                      {...draggableProvided.draggableProps}
-                      // @ts-ignore
-                      style={getItemStyle(
-                        draggableSnapshot.isDragging,
-                        draggableProvided.draggableProps.style
-                      )}
-                    >
-                      <div className="flex items-center">
-                        <div
-                          className="mr-2"
-                          {...draggableProvided.dragHandleProps}
-                        >
-                          <MdDragIndicator />
-                        </div>
-                        <ContentEditableRow
+    <Layout>
+      <SidebarWrapper border="lightgrey" />
+      <MainWrapper background="white">
+        <DragDropContext onDragEnd={onDragEnd}>
+          <Droppable droppableId="droppable">
+            {(droppableProvided, droppableSnapshot) => (
+              <div
+                ref={droppableProvided.innerRef}
+                style={getListStyle(droppableSnapshot.isDraggingOver)}
+              >
+                {contentRows.map((contentRow, index) => (
+                  <Draggable
+                    key={contentRow.id}
+                    draggableId={contentRow.id}
+                    index={index}
+                  >
+                    {(draggableProvided, draggableSnapshot) => {
+                      return (
+                        <DraggableRow
+                          draggableProvided={draggableProvided}
+                          draggableSnapshot={draggableSnapshot}
                           contentRow={contentRow}
                           setContentRows={setContentRows}
                         />
-                      </div>
-                    </div>
-                  )}
-                </Draggable>
-              ))}
-              {droppableProvided.placeholder}
-            </div>
-          )}
-        </Droppable>
-      </DragDropContext>
-    </div>
+                      );
+                    }}
+                  </Draggable>
+                ))}
+                {droppableProvided.placeholder}
+              </div>
+            )}
+          </Droppable>
+        </DragDropContext>
+      </MainWrapper>
+    </Layout>
   );
 }
 
