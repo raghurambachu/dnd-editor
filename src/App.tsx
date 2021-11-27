@@ -1,26 +1,14 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+  /* Todo:
+    1. Integrate react-beautiful-dnd
+    2. Ensure drag and drop works
+    3. Add drag-handle(UI)
+    4. Create content-editable
+    5. Change the layout design 
+  */
+  return <div className="bg-blue-100 min-h-screen">Raghuram</div>;
 }
 
 export default App;
