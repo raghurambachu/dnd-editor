@@ -1,16 +1,11 @@
 import styled from "@emotion/styled";
 import { useEffect, useState } from "react";
-import {
-  DragDropContext,
-  Draggable,
-  Droppable,
-  DropResult,
-} from "react-beautiful-dnd";
+import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import { useLocation } from "react-router";
 import { appData } from "../data";
 import { IContentRow } from "../interfaces";
 import { appConfig } from "../utilities/appConfig";
-import { reorder } from "../utilities/helper";
+import { handleAddContentEditableRow, onDragEnd } from "../utilities/helper";
 import DraggableRow from "./DraggableRow";
 
 const getListStyle = (isDraggingOver: boolean) => ({
@@ -49,45 +44,14 @@ const ContentEditor = () => {
     }
   }, [location.pathname]);
 
-  function onDragEnd(result: DropResult) {
-    // dropped outside the list
-    if (!result.destination) {
-      return;
-    }
-
-    const contentRowList = reorder(
-      contentRows,
-      result.source.index,
-      result.destination.index
-    );
-
-    setContentRows(contentRowList);
-  }
-  // Todo: needs to be moved to utilities
-  function handleAddContentEditableRow(contentRow: IContentRow) {
-    const createdNewContentRow: IContentRow = {
-      id: `item-${contentRows.length + 1}`,
-      htmlContent: `<p> </p>`,
-    };
-    setNewlyCreatedContentRowId(createdNewContentRow.id);
-
-    let contentRowList = Array.from(contentRows);
-    const currentClickedContentRowIndex = contentRows.findIndex(
-      (contentRowVal) => contentRowVal.id === contentRow.id
-    );
-    contentRowList.splice(
-      currentClickedContentRowIndex + 1,
-      0,
-      createdNewContentRow
-    );
-
-    setContentRows([...contentRowList]);
-  }
-
   return (
     <ContentEditorWrapper>
       <h3 className="content-editor-title">{contentEditorTitle}</h3>
-      <DragDropContext onDragEnd={onDragEnd}>
+      <DragDropContext
+        onDragEnd={(result) =>
+          onDragEnd({ result, contentRows, setContentRows })
+        }
+      >
         <Droppable droppableId="droppable">
           {(droppableProvided, droppableSnapshot) => (
             <div
@@ -107,8 +71,13 @@ const ContentEditor = () => {
                         draggableSnapshot={draggableSnapshot}
                         contentRow={contentRow}
                         setContentRows={setContentRows}
-                        handleAddContentEditableRow={
-                          handleAddContentEditableRow
+                        handleAddContentEditableRow={() =>
+                          handleAddContentEditableRow({
+                            contentRows,
+                            contentRow,
+                            setContentRows,
+                            setNewlyCreatedContentRowId,
+                          })
                         }
                         newlyCreatedContentRowId={newlyCreatedContentRowId}
                       />
