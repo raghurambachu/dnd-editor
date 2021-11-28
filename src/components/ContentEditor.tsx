@@ -1,10 +1,13 @@
-import { useState } from "react";
+import styled from "@emotion/styled";
+import { useEffect, useState } from "react";
 import {
   DragDropContext,
   Draggable,
   Droppable,
   DropResult,
 } from "react-beautiful-dnd";
+import { useLocation } from "react-router";
+import { appData } from "../data";
 import { IContentRow } from "../interfaces";
 import { reorder } from "../utilities/helper";
 import DraggableRow from "./DraggableRow";
@@ -13,7 +16,20 @@ const getListStyle = (isDraggingOver: boolean) => ({
   background: isDraggingOver ? "lightblue" : "white",
 });
 
+const ContentEditorWrapper = styled.div`
+  .content-editor-title {
+    font-size: 2.4rem;
+    user-select: none;
+    margin-bottom: 2rem;
+    margin-left: 5rem;
+    font-weight: 600;
+  }
+`;
+
 const ContentEditor = () => {
+  const location = useLocation();
+  const [contentEditorTitle, setContentEditorTitle] = useState("");
+  const { gettingStarted, aboutMe } = appData;
   // This takes care of managing the focus on creation of new editable content row
   const [newlyCreatedContentRowId, setNewlyCreatedContentRowId] = useState("");
   const [contentRows, setContentRows] = useState<IContentRow[]>([
@@ -42,6 +58,16 @@ const ContentEditor = () => {
       htmlContent: `<p>item-6 content</p>`,
     },
   ]);
+
+  useEffect(() => {
+    if (location.pathname === "/getting-started") {
+      setContentEditorTitle("Getting Started");
+      setContentRows(gettingStarted);
+    } else if (location.pathname === "/about-me") {
+      setContentEditorTitle("About Me");
+      setContentRows(aboutMe);
+    }
+  }, [location.pathname]);
 
   function onDragEnd(result: DropResult) {
     // dropped outside the list
@@ -79,38 +105,43 @@ const ContentEditor = () => {
   }
 
   return (
-    <DragDropContext onDragEnd={onDragEnd}>
-      <Droppable droppableId="droppable">
-        {(droppableProvided, droppableSnapshot) => (
-          <div
-            ref={droppableProvided.innerRef}
-            style={getListStyle(droppableSnapshot.isDraggingOver)}
-          >
-            {contentRows.map((contentRow, index) => (
-              <Draggable
-                key={contentRow.id}
-                draggableId={contentRow.id}
-                index={index}
-              >
-                {(draggableProvided, draggableSnapshot) => {
-                  return (
-                    <DraggableRow
-                      draggableProvided={draggableProvided}
-                      draggableSnapshot={draggableSnapshot}
-                      contentRow={contentRow}
-                      setContentRows={setContentRows}
-                      handleAddContentEditableRow={handleAddContentEditableRow}
-                      newlyCreatedContentRowId={newlyCreatedContentRowId}
-                    />
-                  );
-                }}
-              </Draggable>
-            ))}
-            {droppableProvided.placeholder}
-          </div>
-        )}
-      </Droppable>
-    </DragDropContext>
+    <ContentEditorWrapper>
+      <h3 className="content-editor-title">{contentEditorTitle}</h3>
+      <DragDropContext onDragEnd={onDragEnd}>
+        <Droppable droppableId="droppable">
+          {(droppableProvided, droppableSnapshot) => (
+            <div
+              ref={droppableProvided.innerRef}
+              style={getListStyle(droppableSnapshot.isDraggingOver)}
+            >
+              {contentRows.map((contentRow, index) => (
+                <Draggable
+                  key={contentRow.id}
+                  draggableId={contentRow.id}
+                  index={index}
+                >
+                  {(draggableProvided, draggableSnapshot) => {
+                    return (
+                      <DraggableRow
+                        draggableProvided={draggableProvided}
+                        draggableSnapshot={draggableSnapshot}
+                        contentRow={contentRow}
+                        setContentRows={setContentRows}
+                        handleAddContentEditableRow={
+                          handleAddContentEditableRow
+                        }
+                        newlyCreatedContentRowId={newlyCreatedContentRowId}
+                      />
+                    );
+                  }}
+                </Draggable>
+              ))}
+              {droppableProvided.placeholder}
+            </div>
+          )}
+        </Droppable>
+      </DragDropContext>
+    </ContentEditorWrapper>
   );
 };
 

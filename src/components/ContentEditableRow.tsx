@@ -2,7 +2,6 @@ import styled from "@emotion/styled";
 import { Popover } from "react-text-selection-popover";
 import ContentEditable from "react-contenteditable";
 import { IContentRow } from "../interfaces";
-import { FaBold } from "react-icons/fa";
 import { useEffect, useRef } from "react";
 
 const ContentEditableWrapper = styled.div`
@@ -48,6 +47,7 @@ const ContentEditableRow = ({
 }: IContentEditableRow) => {
   const { id, htmlContent } = contentRow;
   const newlyCreatedContentEditableRef = useRef<any>(null);
+  console.log(htmlContent);
 
   useEffect(() => {
     // Sets the focus to newlyCreated content row

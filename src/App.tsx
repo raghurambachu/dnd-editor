@@ -1,25 +1,9 @@
-import React, { useState } from "react";
-import { MdDragIndicator } from "react-icons/md";
-import {
-  DragDropContext,
-  Draggable,
-  DraggingStyle,
-  Droppable,
-  DropResult,
-  NotDraggingStyle,
-} from "react-beautiful-dnd";
-import { IContentRow } from "./interfaces";
-import ContentEditableRow from "./components/ContentEditableRow";
-import { reorder } from "./utilities/helper";
+import React from "react";
 import styled from "@emotion/styled";
-import DraggableRow from "./components/DraggableRow";
-import { FaBold, FaUnderline } from "react-icons/fa";
-import { IoCopySharp } from "react-icons/io5";
-import TextEnhancementAction from "./components/TextEnhancementAction";
 import TextEnhancementActions from "./components/TextEnhancementActions";
 import Sidebar from "./components/Sidebar";
 import ContentEditor from "./components/ContentEditor";
-
+import { Switch, Route, Redirect } from "react-router-dom";
 const Layout = styled.div`
   display: grid;
   min-height: 100vh;
@@ -77,7 +61,11 @@ function App() {
       </SidebarWrapper>
       <MainWrapper background="white">
         <TextEnhancementActions />
-        <ContentEditor />
+        <Switch>
+          <Route path="/getting-started" exact component={ContentEditor} />
+          <Route path="/about-me" exact component={ContentEditor} />
+          <Redirect to="/getting-started" />
+        </Switch>
       </MainWrapper>
     </Layout>
   );
