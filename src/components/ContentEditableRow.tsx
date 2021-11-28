@@ -2,6 +2,8 @@ import styled from "@emotion/styled";
 import { Popover } from "react-text-selection-popover";
 import ContentEditable from "react-contenteditable";
 import { IContentRow } from "../interfaces";
+import { FaBold } from "react-icons/fa";
+import { useEffect, useRef } from "react";
 
 const ContentEditableWrapper = styled.div`
   font-size: 1.6rem;
@@ -26,7 +28,7 @@ const PopoverWrapper = styled.div`
   top: ${({ top }: IPopoverWrapper) => `${top - 30}px`};
   width: 20rem;
   background: #efefef;
-  pointer-events: none;
+  padding: 0.25rem;
   text-align: center;
   color: #35352f;
   border-radius: 3px;
@@ -36,13 +38,23 @@ const PopoverWrapper = styled.div`
 interface IContentEditableRow {
   contentRow: IContentRow;
   setContentRows: React.Dispatch<React.SetStateAction<IContentRow[]>>;
+  newlyCreatedContentRowId: string;
 }
 
 const ContentEditableRow = ({
   contentRow,
   setContentRows,
+  newlyCreatedContentRowId,
 }: IContentEditableRow) => {
   const { id, htmlContent } = contentRow;
+  const newlyCreatedContentEditableRef = useRef<any>(null);
+
+  useEffect(() => {
+    // Sets the focus to newlyCreated content row
+    if (newlyCreatedContentRowId && newlyCreatedContentEditableRef) {
+      newlyCreatedContentEditableRef?.current?.focus();
+    }
+  }, [newlyCreatedContentRowId]);
 
   return (
     <ContentEditableWrapper>
@@ -50,6 +62,11 @@ const ContentEditableRow = ({
         className="editable"
         tagName="pre"
         html={htmlContent}
+        innerRef={
+          contentRow.id === newlyCreatedContentRowId
+            ? newlyCreatedContentEditableRef
+            : undefined
+        }
         onChange={(e) =>
           setContentRows((contentRows) => {
             const editableContentRowIndex = contentRows.findIndex(

@@ -60,6 +60,9 @@ function App() {
     4. Create content-editable
     5. Change the layout design 
   */
+
+  // This takes care of managing the focus on creation of new editable content row
+  const [newlyCreatedContentRowId, setNewlyCreatedContentRowId] = useState("");
   const [contentRows, setContentRows] = useState<IContentRow[]>([
     {
       id: "item-1",
@@ -107,6 +110,7 @@ function App() {
       id: `item-${contentRows.length + 1}`,
       htmlContent: `<p> </p>`,
     };
+    setNewlyCreatedContentRowId(createdNewContentRow.id);
 
     let contentRowList = Array.from(contentRows);
     const currentClickedContentRowIndex = contentRows.findIndex(
@@ -148,6 +152,7 @@ function App() {
                           handleAddContentEditableRow={
                             handleAddContentEditableRow
                           }
+                          newlyCreatedContentRowId={newlyCreatedContentRowId}
                         />
                       );
                     }}

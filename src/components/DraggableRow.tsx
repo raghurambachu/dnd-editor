@@ -60,6 +60,7 @@ interface IDraggableRow {
   contentRow: IContentRow;
   setContentRows: React.Dispatch<React.SetStateAction<IContentRow[]>>;
   handleAddContentEditableRow: (contentRowVal: IContentRow) => void;
+  newlyCreatedContentRowId: string;
 }
 
 const DraggableRow = ({
@@ -68,6 +69,7 @@ const DraggableRow = ({
   contentRow,
   setContentRows,
   handleAddContentEditableRow,
+  newlyCreatedContentRowId,
 }: IDraggableRow) => {
   const [isBeingHovered, setIsBeingHovered] = useState(false);
 
@@ -106,6 +108,7 @@ const DraggableRow = ({
         <ContentEditableRow
           contentRow={contentRow}
           setContentRows={setContentRows}
+          newlyCreatedContentRowId={newlyCreatedContentRowId}
         />
       </DraggableRowInnerWrapper>
     </DraggableRowWrapper>
