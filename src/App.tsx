@@ -61,6 +61,9 @@ function App() {
 
   return (
     <Layout>
+      <Switch>
+        <Redirect to="/" />
+      </Switch>
       <SidebarWrapper border="lightgrey">
         <Sidebar />
       </SidebarWrapper>
