@@ -1,19 +1,10 @@
-import React, { useState } from "react";
-import { MdDragIndicator } from "react-icons/md";
-import {
-  DragDropContext,
-  Draggable,
-  DraggingStyle,
-  Droppable,
-  DropResult,
-  NotDraggingStyle,
-} from "react-beautiful-dnd";
-import { IContentRow } from "./interfaces";
-import ContentEditableRow from "./components/ContentEditableRow";
-import { reorder } from "./utilities/helper";
+import React from "react";
 import styled from "@emotion/styled";
-import DraggableRow from "./components/DraggableRow";
-
+import TextEnhancementActions from "./components/TextEnhancementActions";
+import Sidebar from "./components/Sidebar";
+import ContentEditor from "./components/ContentEditor";
+import { Switch, Route, Redirect } from "react-router-dom";
+import { appConfig } from "./utilities/appConfig";
 const Layout = styled.div`
   display: grid;
   min-height: 100vh;
@@ -35,6 +26,13 @@ const SidebarWrapper = styled.aside`
   height: 100vh;
   background: #f6f6f2;
   min-height: 100vh;
+  .helptap-logo {
+    width: 15rem;
+    height: 15rem;
+    transform: scale(0.5);
+    display: block;
+    margin: 0 auto;
+  }
 `;
 
 interface IMainWrapper {
@@ -48,10 +46,6 @@ const MainWrapper = styled.main`
   overflow-y: auto;
 `;
 
-const getListStyle = (isDraggingOver: boolean) => ({
-  background: isDraggingOver ? "lightblue" : "white",
-});
-
 function App() {
   /* Todo:
     1. Integrate react-beautiful-dnd
@@ -60,104 +54,23 @@ function App() {
     4. Create content-editable
     5. Change the layout design 
   */
-  const [contentRows, setContentRows] = useState<IContentRow[]>([
-    {
-      id: "item-1",
-      htmlContent: `<p>item-1 content</p>`,
-    },
-    {
-      id: "item-2",
-      htmlContent: `<p>item-2 content</p>`,
-    },
-    {
-      id: "item-3",
-      htmlContent: `<p>item-3 content</p>`,
-    },
-    {
-      id: "item-4",
-      htmlContent: `<p>item-4 content</p>`,
-    },
-    {
-      id: "item-5",
-      htmlContent: `<p>item-5 content</p>`,
-    },
-    {
-      id: "item-6",
-      htmlContent: `<p>item-6 content</p>`,
-    },
-  ]);
 
-  function onDragEnd(result: DropResult) {
-    // dropped outside the list
-    if (!result.destination) {
-      return;
-    }
-
-    const contentRowList = reorder(
-      contentRows,
-      result.source.index,
-      result.destination.index
-    );
-
-    setContentRows(contentRowList);
-  }
-  // Todo: needs to be moved to utilities
-  function handleAddContentEditableRow(contentRow: IContentRow) {
-    const createdNewContentRow: IContentRow = {
-      id: `item-${contentRows.length + 1}`,
-      htmlContent: `<p> </p>`,
-    };
-
-    let contentRowList = Array.from(contentRows);
-    const currentClickedContentRowIndex = contentRows.findIndex(
-      (contentRowVal) => contentRowVal.id === contentRow.id
-    );
-    contentRowList.splice(
-      currentClickedContentRowIndex + 1,
-      0,
-      createdNewContentRow
-    );
-
-    setContentRows([...contentRowList]);
-  }
+  const {
+    url: { aboutMe, gettingStarted },
+  } = appConfig;
 
   return (
     <Layout>
-      <SidebarWrapper border="lightgrey" />
+      <SidebarWrapper border="lightgrey">
+        <Sidebar />
+      </SidebarWrapper>
       <MainWrapper background="white">
-        <DragDropContext onDragEnd={onDragEnd}>
-          <Droppable droppableId="droppable">
-            {(droppableProvided, droppableSnapshot) => (
-              <div
-                ref={droppableProvided.innerRef}
-                style={getListStyle(droppableSnapshot.isDraggingOver)}
-              >
-                {contentRows.map((contentRow, index) => (
-                  <Draggable
-                    key={contentRow.id}
-                    draggableId={contentRow.id}
-                    index={index}
-                  >
-                    {(draggableProvided, draggableSnapshot) => {
-                      return (
-                        <DraggableRow
-                          draggableProvided={draggableProvided}
-                          draggableSnapshot={draggableSnapshot}
-                          contentRow={contentRow}
-                          setContentRows={setContentRows}
-                          handleAddContentEditableRow={
-                            handleAddContentEditableRow
-                          }
-                        />
-                      );
-                    }}
-                  </Draggable>
-                ))}
-                {droppableProvided.placeholder}
-              </div>
-            )}
-          </Droppable>
-        </DragDropContext>
+        <TextEnhancementActions />
+        <Switch>
+          <Route path={gettingStarted.link} exact component={ContentEditor} />
+          <Route path={aboutMe.link} exact component={ContentEditor} />
+          <Redirect to={gettingStarted.link} />
+        </Switch>
       </MainWrapper>
     </Layout>
   );
