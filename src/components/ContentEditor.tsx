@@ -9,6 +9,7 @@ import {
 import { useLocation } from "react-router";
 import { appData } from "../data";
 import { IContentRow } from "../interfaces";
+import { appConfig } from "../utilities/appConfig";
 import { reorder } from "../utilities/helper";
 import DraggableRow from "./DraggableRow";
 
@@ -30,41 +31,20 @@ const ContentEditor = () => {
   const location = useLocation();
   const [contentEditorTitle, setContentEditorTitle] = useState("");
   const { gettingStarted, aboutMe } = appData;
+  const {
+    url: { gettingStarted: gettingStartedUrl, aboutMe: aboutMeUrl },
+  } = appConfig;
   // This takes care of managing the focus on creation of new editable content row
   const [newlyCreatedContentRowId, setNewlyCreatedContentRowId] = useState("");
-  const [contentRows, setContentRows] = useState<IContentRow[]>([
-    {
-      id: "item-1",
-      htmlContent: `<p>item-1 content</p>`,
-    },
-    {
-      id: "item-2",
-      htmlContent: `<p>item-2 content</p>`,
-    },
-    {
-      id: "item-3",
-      htmlContent: `<p>item-3 content</p>`,
-    },
-    {
-      id: "item-4",
-      htmlContent: `<p>item-4 content</p>`,
-    },
-    {
-      id: "item-5",
-      htmlContent: `<p>item-5 content</p>`,
-    },
-    {
-      id: "item-6",
-      htmlContent: `<p>item-6 content</p>`,
-    },
-  ]);
+  const [contentRows, setContentRows] = useState<IContentRow[]>([]);
 
   useEffect(() => {
-    if (location.pathname === "/getting-started") {
-      setContentEditorTitle("Getting Started");
+    // This if blocks are for rendering data based on the route user navigated to. In ideal situation it would'nt be if blocks rather an api call
+    if (location.pathname === gettingStartedUrl.link) {
+      setContentEditorTitle(gettingStartedUrl.title);
       setContentRows(gettingStarted);
-    } else if (location.pathname === "/about-me") {
-      setContentEditorTitle("About Me");
+    } else if (location.pathname === aboutMeUrl.link) {
+      setContentEditorTitle(aboutMeUrl.title);
       setContentRows(aboutMe);
     }
   }, [location.pathname]);

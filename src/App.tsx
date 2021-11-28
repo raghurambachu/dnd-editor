@@ -4,6 +4,7 @@ import TextEnhancementActions from "./components/TextEnhancementActions";
 import Sidebar from "./components/Sidebar";
 import ContentEditor from "./components/ContentEditor";
 import { Switch, Route, Redirect } from "react-router-dom";
+import { appConfig } from "./utilities/appConfig";
 const Layout = styled.div`
   display: grid;
   min-height: 100vh;
@@ -54,6 +55,10 @@ function App() {
     5. Change the layout design 
   */
 
+  const {
+    url: { aboutMe, gettingStarted },
+  } = appConfig;
+
   return (
     <Layout>
       <SidebarWrapper border="lightgrey">
@@ -62,9 +67,9 @@ function App() {
       <MainWrapper background="white">
         <TextEnhancementActions />
         <Switch>
-          <Route path="/getting-started" exact component={ContentEditor} />
-          <Route path="/about-me" exact component={ContentEditor} />
-          <Redirect to="/getting-started" />
+          <Route path={gettingStarted.link} exact component={ContentEditor} />
+          <Route path={aboutMe.link} exact component={ContentEditor} />
+          <Redirect to={gettingStarted.link} />
         </Switch>
       </MainWrapper>
     </Layout>
