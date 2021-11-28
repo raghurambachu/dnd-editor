@@ -61,9 +61,6 @@ function App() {
 
   return (
     <Layout>
-      <Switch>
-        <Redirect to="/" />
-      </Switch>
       <SidebarWrapper border="lightgrey">
         <Sidebar />
       </SidebarWrapper>
@@ -72,7 +69,9 @@ function App() {
         <Switch>
           <Route path={gettingStarted.link} exact component={ContentEditor} />
           <Route path={aboutMe.link} exact component={ContentEditor} />
-          <Redirect to={gettingStarted.link} />
+          <Route>
+            <Redirect to={gettingStarted.link} />
+          </Route>
         </Switch>
       </MainWrapper>
     </Layout>
