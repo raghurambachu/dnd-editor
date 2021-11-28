@@ -13,6 +13,11 @@ import ContentEditableRow from "./components/ContentEditableRow";
 import { reorder } from "./utilities/helper";
 import styled from "@emotion/styled";
 import DraggableRow from "./components/DraggableRow";
+import { FaBold, FaUnderline } from "react-icons/fa";
+import { IoCopySharp } from "react-icons/io5";
+import TextEnhancementAction from "./components/TextEnhancementAction";
+import TextEnhancementActions from "./components/TextEnhancementActions";
+import Sidebar from "./components/Sidebar";
 
 const Layout = styled.div`
   display: grid;
@@ -35,6 +40,13 @@ const SidebarWrapper = styled.aside`
   height: 100vh;
   background: #f6f6f2;
   min-height: 100vh;
+  .helptap-logo {
+    width: 15rem;
+    height: 15rem;
+    transform: scale(0.5);
+    display: block;
+    margin: 0 auto;
+  }
 `;
 
 interface IMainWrapper {
@@ -127,8 +139,11 @@ function App() {
 
   return (
     <Layout>
-      <SidebarWrapper border="lightgrey" />
+      <SidebarWrapper border="lightgrey">
+        <Sidebar />
+      </SidebarWrapper>
       <MainWrapper background="white">
+        <TextEnhancementActions />
         <DragDropContext onDragEnd={onDragEnd}>
           <Droppable droppableId="droppable">
             {(droppableProvided, droppableSnapshot) => (
